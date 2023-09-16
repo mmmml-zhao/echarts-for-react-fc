@@ -43,6 +43,8 @@ export interface EChartsReactProps {
 export interface ChartRef {
   getEChartsInstance: () => EChartsInstance | null | undefined;
   getEChartsReady: () => boolean;
+  // 手动dispose 后，可以重新调用 renderChart 初始化 echarts 实例
+  renderChart: () => void;
 }
 
 export interface CacheOptionListItem {

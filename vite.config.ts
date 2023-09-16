@@ -12,27 +12,30 @@ export default defineConfig({
     lib: {
       entry: resolvePath("src/index.ts"),
       name: "echarts-for-react-hook",
-      fileName: (format) => `echarts-for-react-hook.${format}.js`,
+      formats: ["es"],
+      fileName: "index",
     },
     rollupOptions: {
-      external: ["react", "react-dom", "echarts"],
+      external: ["react", "react-dom", "echarts", "lodash"],
       output: {
         globals: {
-          react: "react",
           echarts: "echarts",
+          lodash: "lodash",
+          react: "react",
           "react-dom": "react-dom",
         },
       },
       plugins: [
         typescript({
           target: "ES2022", // 这里指定编译到的版本，
-          rootDir: resolvePath("src/"),
+          rootDir: resolvePath("src"),
           declaration: true,
-          declarationDir: resolvePath("dist"),
+          declarationDir: resolvePath("lib"),
           exclude: resolvePath("node_modules/**"),
-          allowSyntheticDefaultImports: true,
         }),
       ],
     },
+    outDir: "lib", // 打包后存放的目录文件
+    sourcemap: true,
   },
 });

@@ -15,9 +15,9 @@ import {
   EChartsOption,
 } from "./types";
 import ResizeObserver from "resize-observer-polyfill";
-import cloneDeep from "lodash/cloneDeep";
 import isEqual from "lodash/isEqual";
 import debounce from "lodash/debounce";
+import isObject from "lodash/isObject";
 import { defaultResizeParams } from "./static";
 
 const arePropsEqual = (
@@ -33,7 +33,7 @@ const ReactEChartsCore: ForwardRefRenderFunction<
   ChartRef,
   EChartsReactProps
 > = (props, ref) => {
-  const { echarts, theme, initOpts, onEvents, style, classname } = props;
+  const { theme, initOpts, onEvents, style, classname } = props;
 
   const propsRef = useRef<EChartsReactProps>(props);
   useEffect(() => {
@@ -54,20 +54,6 @@ const ReactEChartsCore: ForwardRefRenderFunction<
     return readyRef.current;
   }, []);
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        getEChartsInstance,
-        getEChartsReady,
-      };
-    },
-    [getEChartsInstance, getEChartsReady]
-  );
-
-  // echartsInstance,当前的图表实例
-  const chartInstanceRef = useRef<ReturnType<typeof echarts.init>>();
-
   // 监听 div尺寸变化 触发echarts resize方法
   const resizeObserverRef = useRef<ResizeObserver>(
     new ResizeObserver(
@@ -75,13 +61,13 @@ const ReactEChartsCore: ForwardRefRenderFunction<
         let autoResize = {
           ...defaultResizeParams,
         };
-        if (typeof propsRef.current?.autoResize === "object") {
+        if (isObject(propsRef.current?.autoResize)) {
           autoResize = {
             ...autoResize,
             ...propsRef.current?.autoResize,
           };
         }
-        chartInstanceRef.current?.resize(autoResize);
+        getEChartsInstance()?.resize(autoResize);
       }, 200)
     )
   );
@@ -93,10 +79,11 @@ const ReactEChartsCore: ForwardRefRenderFunction<
         query: EChartsEventInfo["query"],
         handler: EChartsEventInfo["handler"]
       ) {
+        const echartsInstance = getEChartsInstance();
         if (query) {
-          chartInstanceRef.current?.on(eventName, query, handler);
+          echartsInstance?.on(eventName, query, handler);
         } else {
-          chartInstanceRef.current?.on(eventName, handler);
+          echartsInstance?.on(eventName, handler);
         }
       }
 
@@ -129,101 +116,95 @@ const ReactEChartsCore: ForwardRefRenderFunction<
     resizeObserverRef.current?.disconnect();
     if (propsRef.current?.autoResize ?? true) {
       // 添加当前监听
-      const dom = chartInstanceRef.current?.getDom();
-      resizeObserverRef.current?.observe(dom!);
+      const dom = getEChartsInstance()?.getDom();
+      dom && resizeObserverRef.current?.observe(dom);
     }
   }, []);
 
   // 解除绑定，解除监听
   const dispose = useCallback(() => {
-    chartInstanceRef.current?.dispose();
+    const { onChartReady } = propsRef.current;
+
+    readyRef.current = false;
+    onChartReady?.(false);
+
+    getEChartsInstance()?.dispose();
     resizeObserverRef.current?.disconnect();
-    console.log("dispose");
+
+    // console.log("dispose");
   }, []);
 
-  const initEChartsInstance =
-    useCallback(async (): Promise<EChartsInstance> => {
-      const { echarts, theme, initOpts } = propsRef.current;
-      return new Promise((resolve) => {
-        // create temporary echart instance
-        const echartsInstance = echarts.init(domRef.current, theme, initOpts);
+  const createEChartsInstance = useCallback((): EChartsInstance => {
+    const { echarts, theme, initOpts } = propsRef.current;
+    return echarts.init(domRef.current, theme, initOpts);
+  }, []);
 
-        echartsInstance.on("finished", () => {
-          // get final width and height
-          const width = domRef.current?.clientWidth;
-          const height = domRef.current?.clientHeight;
+  const initEChartsInstance = useCallback(() => {
+    // 之前的实例未被销毁，则需要获取之前的option，销毁过去的实例，重新设置到新实例上
+    let option: EChartsOption | null = null;
+    const oldChartInstance = getEChartsInstance();
+    if (oldChartInstance && !oldChartInstance.isDisposed()) {
+      option = oldChartInstance.getOption();
+      dispose();
+    }
 
-          // dispose temporary echart instance
-          echarts.dispose(domRef.current!);
+    const echartsInstance = createEChartsInstance();
 
-          // recreate echart instance
-          // we use final width and height only if not originally provided as opts
-          const opts = {
-            width,
-            height,
-            ...initOpts,
-          };
-          resolve(echarts.init(domRef.current, theme, opts));
-        });
-      });
-    }, []);
+    // 如果之前的图表未disposed，则需要重新渲染过去的option
+    if (option) {
+      echartsInstance.setOption(option);
+    }
+
+    return echartsInstance;
+  }, []);
 
   // 渲染chart
-  const renderChart = useCallback(
-    async (init?: boolean) => {
-      const { onEvents, onChartReady } = propsRef.current;
+  const renderChart = useCallback(() => {
+    // console.log("renderChart start");
+    const { onEvents, onChartReady } = propsRef.current;
 
-      // 如果不是初始化，之前的实例未被销毁，则需要获取之前的option，重新设置到instance上
-      let option: EChartsOption | null = null;
-      if (
-        !init &&
-        chartInstanceRef.current &&
-        !chartInstanceRef.current?.isDisposed()
-      ) {
-        option = cloneDeep(chartInstanceRef.current?.getOption());
+    // 获取新instance
+    initEChartsInstance();
 
-        dispose();
+    addListenChartEvent(onEvents);
 
-        readyRef.current = false;
-        onChartReady?.(false);
-      }
+    readyRef.current = true;
+    onChartReady?.(true);
 
-      // 获取新instance
-      chartInstanceRef.current = await initEChartsInstance();
+    addListenResize();
+    // console.log("renderChart end");
+  }, [addListenChartEvent, addListenResize, dispose, initEChartsInstance]);
 
-      // 如果不是init，且之前的图表未disposed，则需要重新渲染过去的option
-      if (!init && option) {
-        chartInstanceRef.current.setOption(option);
-      }
-
-      addListenChartEvent(onEvents);
-
-      readyRef.current = true;
-      onChartReady?.(true);
-
-      console.log("init");
-
-      addListenResize();
-    },
-    [addListenChartEvent, addListenResize, dispose, initEChartsInstance]
-  );
+  // 监听当 theme, initOpts, onEvents 变化时，重新render。
+  useEffect(() => {
+    // console.log("// 监听当 theme, initOpts, onEvents 变化时，重新render。");
+    if (readyRef.current) {
+      void renderChart();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [theme, initOpts, onEvents]);
 
   // 初始化运行
   useEffect(() => {
-    void renderChart(true);
+    // console.log("// 初始化运行");
+    void renderChart();
     return () => {
       dispose();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 监听当 theme, initOpts, onEvents 变化时，重新render。
-  useEffect(() => {
-    if (readyRef.current) {
-      void renderChart();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme, initOpts, onEvents]);
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        getEChartsInstance,
+        getEChartsReady,
+        renderChart,
+      };
+    },
+    [getEChartsInstance, getEChartsReady, renderChart]
+  );
 
   return <div ref={domRef} className={classname} style={style}></div>;
 };

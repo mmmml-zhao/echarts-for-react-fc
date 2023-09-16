@@ -9,7 +9,7 @@ import {
 } from "../types";
 
 const useChart = () => {
-  const chartRef = useRef<ChartRef>();
+  const chartRef = useRef<ChartRef | null>(null);
 
   // 图表未准备好时，缓存option。
   const catchOptionsRef = useRef<CacheOptionListItem[]>([]);
