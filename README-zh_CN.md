@@ -1,4 +1,4 @@
-# echart for react hook
+# echarts for react hook
 
 <!-- [![npm](https://img.shields.io/npm/v/echarts-for-react-hook.svg)](https://www.npmjs.com/package/echarts-for-react-hook) -->
 <!-- [![Build Status](https://github.com/hustcc/echarts-for-react/workflows/build/badge.svg?branch=main)](https://github.com/hustcc/echarts-for-react/actions?query=workflow%3Abuild) -->
