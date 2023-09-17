@@ -1,10 +1,10 @@
 # echarts for react hook
 
-<!-- [![npm](https://img.shields.io/npm/v/echarts-for-react-hook.svg)](https://www.npmjs.com/package/echarts-for-react-hook) -->
+<!-- [![npm](https://img.shields.io/npm/v/echarts-for-react-fc.svg)](https://www.npmjs.com/package/echarts-for-react-fc) -->
 <!-- [![Build Status](https://github.com/hustcc/echarts-for-react/workflows/build/badge.svg?branch=main)](https://github.com/hustcc/echarts-for-react/actions?query=workflow%3Abuild) -->
-<!-- [![Coverage](https://img.shields.io/coveralls/hustcc/echarts-for-react-hook/main.svg)](https://coveralls.io/github/hustcc/echarts-for-react) -->
+<!-- [![Coverage](https://img.shields.io/coveralls/hustcc/echarts-for-react-fc/main.svg)](https://coveralls.io/github/hustcc/echarts-for-react) -->
 <!-- [![NPM downloads](https://img.shields.io/npm/dm/echarts-for-react.svg)](https://www.npmjs.com/package/echarts-for-react) -->
-<!-- [![License](https://img.shields.io/npm/l/echarts-for-react-hook.svg)](https://www.npmjs.com/package/echarts-for-react-hook) -->
+<!-- [![License](https://img.shields.io/npm/l/echarts-for-react-fc.svg)](https://www.npmjs.com/package/echarts-for-react-fc) -->
 
 ![ECharts Ver](https://img.shields.io/badge/echarts-%5E5.0.0-blue.svg)
 ![React Ver](https://img.shields.io/badge/React-%5E16.8.0%20%7C%7C%20%20%5E17.0.0-blue.svg)
@@ -16,9 +16,9 @@
 <!-- ## 安装
 
 ```bach
-$ npm install --save echarts-for-react-hook
+$ npm install --save echarts-for-react-fc
 
-# echarts 通过 echarts-for-react-hook 的 peerDependence 获得，使用自己的版本安装 echarts。
+# echarts 通过 echarts-for-react-fc 的 peerDependence 获得，使用自己的版本安装 echarts。
 $ npm install --save echarts
 
 ``` -->
@@ -51,7 +51,7 @@ import { CanvasRenderer } from "echarts/renderers";
 import EChartsReact, {
   useChart,
   EChartsReactProps,
-} from "echarts-for-react-hook";
+} from "echarts-for-react-fc";
 
 echarts.use([GridComponent, LineChart, CanvasRenderer]);
 
@@ -119,7 +119,7 @@ import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
 import EChartsReact, {
   useChart,
   EChartsReactProps,
-} from "echarts-for-react-hook";
+} from "echarts-for-react-fc";
 
 echarts.use([
   GridComponent,
