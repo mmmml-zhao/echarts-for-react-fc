@@ -1,6 +1,6 @@
 {
-  "name": "echarts-for-react-hook",
-  "version": "0.0.3",
+  "name": "echarts-for-react-fc",
+  "version": "0.0.1",
   "description": "Using ECharts in React, encapsulating it within a functional component, and providing a hook for consumers to consume.",
   "license": "MIT",
   "main": "lib/index.mjs",
@@ -10,13 +10,13 @@
     "src"
   ],
   "author": "mmmml-zhao",
-  "homepage": "https://github.com/mmmml-zhao/echarts-for-react-hook",
+  "homepage": "https://github.com/mmmml-zhao/echarts-for-react-fc",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mmmml-zhao/echarts-for-react-hook"
+    "url": "https://github.com/mmmml-zhao/echarts-for-react-fc"
   },
   "bugs": {
-    "url": "https://github.com/mmmml-zhao/echarts-for-react-hook/issues"
+    "url": "https://github.com/mmmml-zhao/echarts-for-react-fc/issues"
   },
   "scripts": {
     "dev": "vite",

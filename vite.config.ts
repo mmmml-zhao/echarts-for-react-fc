@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolvePath("src/index.ts"),
-      name: "echarts-for-react-hook",
+      name: "echarts-for-react-fc",
       formats: ["es"],
       fileName: "index",
     },
