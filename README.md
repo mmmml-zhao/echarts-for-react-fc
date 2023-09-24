@@ -111,7 +111,7 @@ a complete exmaple.
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import * as echarts from "echarts/core";
-import { GridComponent } from "echarts/components";
+import { GridComponent, TooltipComponent } from "echarts/components";
 import { LineChart, PieChart } from "echarts/charts";
 import { UniversalTransition } from "echarts/features";
 import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
@@ -123,6 +123,7 @@ import EChartsReact, {
 
 echarts.use([
   GridComponent,
+  TooltipComponent,
   LineChart,
   PieChart,
   CanvasRenderer,
@@ -130,8 +131,26 @@ echarts.use([
   UniversalTransition,
 ]);
 
+const createTooltipFn: CreateTooltipFn = ({ params }) => {
+  if (Array.isArray(params)) {
+    return (
+      <div>
+        {params.map((item) => (
+          <div>{item.name}</div>
+        ))}
+      </div>
+    );
+  } else {
+    return <div>{params.name}</div>;
+  }
+};
+
 const TestChart = () => {
   const { chartRef, setChartOption, handleListenChartReady } = useChart();
+
+  const { tooltipDom, tooltipRender, createTooltip } = useTooltip({
+    component: createTooltipFn,
+  });
 
   const [renderer, setRenderer] = useState<"svg" | "canvas">("canvas");
 
@@ -201,6 +220,14 @@ const TestChart = () => {
 
   useEffect(() => {
     setChartOption({
+      tooltip: {
+        formatter: (params) => {
+          setTimeout(() => {
+            createTooltip({ params });
+          }, 100);
+          return tooltipDom;
+        },
+      },
       xAxis: {
         type: "category",
         data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -271,6 +298,7 @@ const TestChart = () => {
         echarts={echarts}
         onChartReady={handleListenChartReady}
       />
+      {tooltipRender}
     </>
   );
 };

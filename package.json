@@ -1,6 +1,6 @@
 {
   "name": "echarts-for-react-fc",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Using ECharts in React, encapsulating it within a functional component, and providing a hook for consumers to consume.",
   "license": "MIT",
   "main": "lib/index.mjs",
@@ -37,8 +37,7 @@
     "react-component"
   ],
   "dependencies": {
-    "lodash": "^4.17.21",
-    "resize-observer-polyfill": "^1.5.1"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.3",

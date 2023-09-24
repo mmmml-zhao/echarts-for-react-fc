@@ -3,7 +3,6 @@ import isObject from "lodash/isObject";
 import {
   CacheOptionListItem,
   ChartRef,
-  EChartsInstance,
   EChartsOption,
   SetOptionOpts,
 } from "../types";
@@ -31,7 +30,7 @@ const useChart = () => {
     }
   }, [getInstance]);
 
-  const setChartOption: EChartsInstance["setOption"] = useCallback(
+  const setChartOption = useCallback(
     (
       option: EChartsOption,
       notMerge?: boolean | SetOptionOpts,
