@@ -37,8 +37,7 @@
     "react-component"
   ],
   "dependencies": {
-    "lodash": "^4.17.21",
-    "resize-observer-polyfill": "^1.5.1"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.3",

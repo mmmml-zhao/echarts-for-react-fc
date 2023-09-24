@@ -14,9 +14,7 @@ import {
   EChartsEventInfo,
   EChartsOption,
 } from "./types";
-import ResizeObserver from "resize-observer-polyfill";
 import isEqual from "lodash/isEqual";
-import debounce from "lodash/debounce";
 import isObject from "lodash/isObject";
 import { defaultResizeParams } from "./static";
 
@@ -56,34 +54,32 @@ const ReactEChartsCore: ForwardRefRenderFunction<
 
   // 监听 div尺寸变化 触发echarts resize方法
   const resizeObserverRef = useRef<ResizeObserver>(
-    new ResizeObserver(
-      debounce(() => {
-        let autoResize = {
-          ...defaultResizeParams,
+    new ResizeObserver(() => {
+      let autoResize = {
+        ...defaultResizeParams,
+      };
+      if (isObject(propsRef.current?.autoResize)) {
+        autoResize = {
+          ...autoResize,
+          ...propsRef.current?.autoResize,
         };
-        if (isObject(propsRef.current?.autoResize)) {
-          autoResize = {
-            ...autoResize,
-            ...propsRef.current?.autoResize,
-          };
-        }
-        getEChartsInstance()?.resize(autoResize);
-      }, 200)
-    )
+      }
+      getEChartsInstance()?.resize(autoResize);
+    })
   );
 
   const addListenChartEvent = useCallback(
     (events: EChartsReactProps["onEvents"] = {}) => {
       function _on(
         eventName: string,
-        query: EChartsEventInfo["query"],
+        query: EChartsEventInfo["query"] | undefined,
         handler: EChartsEventInfo["handler"]
       ) {
         const echartsInstance = getEChartsInstance();
         if (query) {
-          echartsInstance?.on(eventName, query, handler);
+          (echartsInstance?.on as unknown as any)?.(eventName, query, handler);
         } else {
-          echartsInstance?.on(eventName, handler);
+          (echartsInstance?.on as unknown as any)?.(eventName, handler);
         }
       }
 
@@ -144,7 +140,7 @@ const ReactEChartsCore: ForwardRefRenderFunction<
     let option: EChartsOption | null = null;
     const oldChartInstance = getEChartsInstance();
     if (oldChartInstance && !oldChartInstance.isDisposed()) {
-      option = oldChartInstance.getOption();
+      option = oldChartInstance.getOption() as EChartsOption;
       dispose();
     }
 

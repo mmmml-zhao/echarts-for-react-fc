@@ -1,9 +1,13 @@
-import * as echarts from "echarts/core";
-import { CSSProperties } from "react";
+import * as echarts from "echarts";
+import * as echartsCore from "echarts/core";
+import { TopLevelFormatterParams } from "echarts/types/dist/shared";
+import { CSSProperties, ReactNode } from "react";
 
-export type EChartsInstance = ReturnType<typeof echarts.init>;
+export type EChartsInstance = ReturnType<
+  typeof echarts.init | typeof echartsCore.init
+>;
 
-export type EChartsOption = echarts.EChartsCoreOption;
+export type EChartsOption = echarts.EChartsOption;
 
 export type SetOptionOpts = echarts.SetOptionOpts;
 
@@ -12,12 +16,12 @@ export type SetOptionOpts = echarts.SetOptionOpts;
  */
 export interface EChartsEventInfo {
   query?: string | Object;
-  handler: (...args: unknown[]) => void;
+  handler: (...args: unknown[]) => any;
 }
 
 export interface EChartsReactProps {
   // echarts 实例，请使用echarts/core导出
-  echarts: typeof echarts;
+  echarts: typeof echarts | typeof echartsCore;
   // init fn 参数: 主题
   theme?: string | object;
   // init fn 参数: 初始化配置
@@ -50,4 +54,21 @@ export interface ChartRef {
 export interface CacheOptionListItem {
   option: echarts.EChartsCoreOption;
   opts?: echarts.SetOptionOpts;
+}
+
+export interface TooltipProps {
+  tooltipDom: HTMLElement;
+  component: ReactNode;
+}
+
+export type CreateTooltipFnParams = {
+  params: TopLevelFormatterParams;
+  [key: string]: any;
+};
+
+export type CreateTooltipFn = (option: CreateTooltipFnParams) => ReactNode;
+
+export interface UseTooltipProps {
+  component: ReactNode | CreateTooltipFn;
+  debounceTime?: number;
 }
