@@ -1,6 +1,6 @@
 {
   "name": "echarts-for-react-fc",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Using ECharts in React, encapsulating it within a functional component, and providing a hook for consumers to consume.",
   "license": "MIT",
   "main": "lib/index.mjs",
