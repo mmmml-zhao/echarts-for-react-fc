@@ -34,6 +34,20 @@ echarts 内部的任何变化与 react 实际上是没有关系的，在`props`�
 1. 该组件使用 hook 编写，支持 16.8.0 之后 react。
 2. 该组件仅在 echarts v5 中开发、使用，其他 echarts 版本兼容性未知。
 
+## hooks
+
+### useChart  
+使用方式：  
+见下方 <b>例子。</b>    
+用途：  
+通过内置的 `useChart`，用户无需考虑图表是否已经准备好，直接 setOption 即可，更新时机在 hook 里决定。    
+
+### useTooltip  
+使用方式：  
+见下方 <b>一个完整的例子。</b>  
+用途：  
+让react接管echarts tooltip 内的渲染。  
+
 ## 使用
 
 简单的使用方式，使用内部提供的`useChart`，无需考虑任何时机，通过 ref 获取 echarts instance，直接 setOption ，渲染的时机让 hook 来考虑。或者 你提供 一个用于获取 echarts Instance 的 ref、echarts、onChartReady 函数，即可使用。
