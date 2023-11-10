@@ -34,6 +34,20 @@ The props of this component are only used for chart initialization, and any char
 1. This component is written using hooks.
 2. This component is developed and intended for use only with echarts v5. Compatibility with other versions of echarts is unknown.
 
+## hooks
+
+### useChart  
+Usage:  
+See the example below.  
+Purpose:  
+With the built-in useChart, users don't need to worry about whether the chart is ready or not. They can directly set options, and the update timing is determined within the hook.     
+
+### useTooltip  
+Usage:  
+See a complete example below.  
+Purpose:  
+Allows React to take over the rendering inside the ECharts tooltip.  
+
 ## Use
 
 A simple usage approach is to utilize the provided `useChart` hook, without needing to consider any timing concerns. You can obtain the echarts instance through a ref and directly use the setOption method, while letting the hook handle the rendering timing. Alternatively, you can provide a ref, echarts, and onChartReady function to obtain the echarts instance, allowing for customization.
