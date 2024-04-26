@@ -5,9 +5,8 @@ import { LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 
-import EChartsReact, { useChart } from '../src';
-import useTooltip from '../src/hooks/useTooltip';
-import { CreateTooltipFn } from '../src/types';
+// In your own project, bring it in from within 'echarts-for-react-fc' instead of '.../src'.
+import EChartsReact, { useChart, useTooltip ,CreateTooltipFn } from '../src';
 
 echarts.use([
   GridComponent,

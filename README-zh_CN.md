@@ -62,9 +62,7 @@ import { GridComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 
-import EChartsReact, {
-  useChart,
-} from '../src';
+import EChartsReact, { useChart } from 'echarts-for-react-fc';
 
 echarts.use([GridComponent, LineChart, CanvasRenderer]);
 
@@ -130,9 +128,7 @@ import { LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 
-import EChartsReact, { useChart } from '../src';
-import useTooltip from '../src/hooks/useTooltip';
-import { CreateTooltipFn } from '../src/types';
+import EChartsReact, { useChart, useTooltip ,CreateTooltipFn } from 'echarts-for-react-fc';
 
 echarts.use([
   GridComponent,
