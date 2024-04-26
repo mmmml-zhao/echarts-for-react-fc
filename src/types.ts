@@ -1,47 +1,42 @@
-import * as echarts from "echarts";
-import * as echartsCore from "echarts/core";
-import { TopLevelFormatterParams } from "echarts/types/dist/shared";
-import { CSSProperties, ReactNode } from "react";
+import * as echarts from 'echarts';
+import {
+  EChartsType,
+  TopLevelFormatterParams,
+  SetOptionOpts,
+  EChartsOption
+} from 'echarts/types/dist/shared';
+import { CSSProperties, ReactNode } from 'react';
 
-export type EChartsInstance = ReturnType<
-  typeof echarts.init | typeof echartsCore.init
->;
+export type EChartsInstance = EChartsType;
 
-export type EChartsOption = echarts.EChartsOption;
-
-export type SetOptionOpts = echarts.SetOptionOpts;
+export type { EChartsOption, SetOptionOpts } from 'echarts/types/dist/shared';
 
 /**
  *  @description https://echarts.apache.org/zh/api.html#echartsInstance.on
  */
 export interface EChartsEventInfo {
-  query?: string | Object;
+  query?: string | object;
   handler: (...args: unknown[]) => any;
 }
 
 export interface EChartsReactProps {
-  // echarts 实例，请使用echarts/core导出
-  echarts: typeof echarts | typeof echartsCore;
+  // echarts 库
+  readonly echarts?: any;
   // init fn 参数: 主题
   theme?: string | object;
   // init fn 参数: 初始化配置
-  initOpts?: typeof echarts.init extends (
-    dom?: HTMLElement | null,
-    theme?: string | object | null,
-    opts?: infer O
-  ) => any
-    ? O
-    : any;
-  // chart 准备好事件
-  onChartReady: (ready: boolean) => void;
-  // 注册事件
-  onEvents?: Record<string, EChartsEventInfo | EChartsEventInfo[]>;
+  initOpts?: Parameters<typeof echarts.init>[2];
   // 自动resize
   autoResize?: boolean | echarts.ResizeOpts;
   // dom style
   style?: CSSProperties;
   // dom classname
   classname?: string;
+  // chart 准备好事件
+  onChartReady: (ready: boolean) => void;
+  // 注册事件
+  onEvents?: Record<string, EChartsEventInfo | EChartsEventInfo[]>;
+  
 }
 
 export interface ChartRef {
@@ -52,8 +47,8 @@ export interface ChartRef {
 }
 
 export interface CacheOptionListItem {
-  option: echarts.EChartsCoreOption;
-  opts?: echarts.SetOptionOpts;
+  option: EChartsOption;
+  opts?: SetOptionOpts;
 }
 
 export interface TooltipProps {

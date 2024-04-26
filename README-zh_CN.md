@@ -55,37 +55,41 @@ echarts 内部的任何变化与 react 实际上是没有关系的，在`props`�
 一个简单的例子。
 
 ```tsx
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect } from 'react';
 
-import * as echarts from "echarts/core";
-import { GridComponent } from "echarts/components";
-import { LineChart } from "echarts/charts";
-import { CanvasRenderer } from "echarts/renderers";
+import * as echarts from 'echarts/core';
+import { GridComponent } from 'echarts/components';
+import { LineChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
 
 import EChartsReact, {
   useChart,
-  EChartsReactProps,
-} from "echarts-for-react-fc";
+} from '../src';
 
 echarts.use([GridComponent, LineChart, CanvasRenderer]);
 
-const TestChart = () => {
+const style = {
+  width: '100%',
+  height: 300,
+};
+
+const Simple = () => {
   const { chartRef, setChartOption, handleListenChartReady } = useChart();
 
   useEffect(() => {
     setChartOption({
       xAxis: {
-        type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       },
       yAxis: {
-        type: "value",
+        type: 'value',
       },
       series: [
         {
           id: 1,
           data: [150, 230, 224, 218, 135, 147, 260],
-          type: "line",
+          type: 'line',
         },
       ],
     });
@@ -96,7 +100,7 @@ const TestChart = () => {
           {
             id: 2,
             data: [400, 130, 224, 118, 35, 47, 260],
-            type: "line",
+            type: 'line',
           },
         ],
       });
@@ -105,10 +109,7 @@ const TestChart = () => {
 
   return (
     <EChartsReact
-      style={{
-        width: "100%",
-        height: 300,
-      }}
+      style={style}
       ref={chartRef}
       echarts={echarts}
       onChartReady={handleListenChartReady}
@@ -116,34 +117,36 @@ const TestChart = () => {
   );
 };
 
-export default TestChart;
+export default Simple;
 ```
 
 一个完整的例子。
 
 ```tsx
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import * as echarts from 'echarts/core';
+import { GridComponent, TooltipComponent } from 'echarts/components';
+import { LineChart } from 'echarts/charts';
+import { UniversalTransition } from 'echarts/features';
+import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 
-import * as echarts from "echarts/core";
-import { GridComponent, TooltipComponent } from "echarts/components";
-import { LineChart, PieChart } from "echarts/charts";
-import { UniversalTransition } from "echarts/features";
-import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
-
-import EChartsReact, {
-  useChart,
-  EChartsReactProps,
-} from "echarts-for-react-fc";
+import EChartsReact, { useChart } from '../src';
+import useTooltip from '../src/hooks/useTooltip';
+import { CreateTooltipFn } from '../src/types';
 
 echarts.use([
   GridComponent,
   TooltipComponent,
   LineChart,
-  PieChart,
   CanvasRenderer,
   SVGRenderer,
   UniversalTransition,
 ]);
+
+const style = {
+  width: '100%',
+  height: 300,
+};
 
 const createTooltipFn: CreateTooltipFn = ({ params }) => {
   if (Array.isArray(params)) {
@@ -159,78 +162,14 @@ const createTooltipFn: CreateTooltipFn = ({ params }) => {
   }
 };
 
-const TestChart = () => {
+const Complete: FC = () => {
   const { chartRef, setChartOption, handleListenChartReady } = useChart();
 
   const { tooltipDom, tooltipRender, createTooltip } = useTooltip({
     component: createTooltipFn,
   });
 
-  const [renderer, setRenderer] = useState<"svg" | "canvas">("canvas");
-
-  const [number, setNumber] = useState(100);
-
-  const setR = () => {
-    setRenderer((old) => {
-      if (old === "canvas") return "svg" as const;
-      if (old === "svg") return "canvas" as const;
-    });
-  };
-
-  const handleClickSetPieOption = () => {
-    setChartOption(
-      {
-        series: [
-          {
-            name: "Access From",
-            type: "pie",
-            radius: "50%",
-            data: [
-              { value: 1048, name: "Search Engine" },
-              { value: 735, name: "Direct" },
-              { value: 580, name: "Email" },
-              { value: 484, name: "Union Ads" },
-              { value: 300, name: "Video Ads" },
-            ],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
-            },
-          },
-        ],
-      },
-      {
-        notMerge: true,
-      }
-    );
-  };
-
-  const handleClickSetLineOption = () => {
-    setChartOption(
-      {
-        xAxis: {
-          type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            id: 1,
-            data: [150, 230, 224, 218, 135, 147, 260],
-            type: "line",
-          },
-        ],
-      },
-      {
-        notMerge: true,
-      }
-    );
-  };
+  const [renderer, setRenderer] = useState<'canvas' | 'svg'>('canvas');
 
   useEffect(() => {
     setChartOption({
@@ -243,81 +182,48 @@ const TestChart = () => {
         },
       },
       xAxis: {
-        type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       },
       yAxis: {
-        type: "value",
+        type: 'value',
       },
       series: [
         {
-          id: 1,
           data: [150, 230, 224, 218, 135, 147, 260],
-          type: "line",
+          type: 'line',
         },
       ],
     });
-
-    setTimeout(() => {
-      setChartOption({
-        series: [
-          {
-            id: 2,
-            data: [400, 130, 224, 118, 35, 47, 260],
-            type: "line",
-          },
-        ],
-      });
-    }, 2000);
   }, []);
 
-  const setNumberFn = useCallback(function (e) {
-    console.log("The first binding", e);
-    setNumber(e.value);
+  const handleClickToggleRenderer = useCallback(() => {
+    setRenderer((oldRenderer) => (oldRenderer === 'canvas' ? 'svg' : 'canvas'));
   }, []);
 
-  const events = useMemo<EChartsReactProps["onEvents"]>(() => {
+  const initOpts = useMemo(() => {
     return {
-      click: [
-        {
-          query: { seriesId: "1" },
-          handler: setNumberFn,
-        },
-        {
-          handler: function (e) {
-            console.log("The second binding", e);
-          },
-        },
-      ],
+      renderer: renderer,
     };
-  }, [setNumberFn]);
+  }, [renderer]);
 
   return (
     <>
-      <button onClick={handleClickSetPieOption}>set pie chart</button>
-      <button onClick={handleClickSetLineOption}>set line chart</button>
-      <button onClick={setR}>{renderer}set renderer type</button>
-      <> {number}</>
+      <p> now renderer: {renderer}</p>
+      <button onClick={handleClickToggleRenderer}>toggle theme</button>
       <EChartsReact
-        style={{
-          width: "100%",
-          height: 300,
-        }}
         ref={chartRef}
-        initOpts={{
-          renderer: renderer,
-        }}
-        autoResize={true}
-        onEvents={events}
+        initOpts={initOpts}
+        style={style}
         echarts={echarts}
         onChartReady={handleListenChartReady}
-      />
+      ></EChartsReact>
       {tooltipRender}
     </>
   );
 };
 
-export default TestChart;
+export default Complete;
 ```
 
 ## 参数
