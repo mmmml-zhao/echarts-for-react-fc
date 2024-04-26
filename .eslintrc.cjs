@@ -14,5 +14,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    "@typescript-eslint/no-explicit-any": 'off',
+    'quotes': [1, 'single'],
+    "indent": ["error", 2]
   },
 }

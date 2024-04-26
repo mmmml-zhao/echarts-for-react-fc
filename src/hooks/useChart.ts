@@ -1,11 +1,11 @@
-import { useCallback, useRef } from "react";
-import isObject from "lodash/isObject";
+import { useCallback, useRef } from 'react';
+import { isObject } from 'lodash-es';
 import {
   CacheOptionListItem,
   ChartRef,
   EChartsOption,
   SetOptionOpts,
-} from "../types";
+} from '../types';
 
 const useChart = () => {
   const chartRef = useRef<ChartRef | null>(null);
@@ -24,7 +24,7 @@ const useChart = () => {
   const renderCatchOption = useCallback(() => {
     if (catchOptionsRef.current.length > 0) {
       catchOptionsRef.current.forEach((item) =>
-        getInstance()?.setOption(item.option, item.opts)
+        getInstance()?.setOption(item.option, item.opts),
       );
       catchOptionsRef.current = [];
     }
@@ -34,7 +34,7 @@ const useChart = () => {
     (
       option: EChartsOption,
       notMerge?: boolean | SetOptionOpts,
-      lazyUpdate?: boolean
+      lazyUpdate?: boolean,
     ) => {
       let opts = {};
       if (isObject(notMerge)) {
@@ -54,7 +54,7 @@ const useChart = () => {
         catchOptionsRef.current.push({ option, opts });
       }
     },
-    [getChartReady, getInstance, renderCatchOption]
+    [getChartReady, getInstance, renderCatchOption],
   );
 
   const handleListenChartReady = useCallback(
@@ -64,7 +64,7 @@ const useChart = () => {
         renderCatchOption();
       }
     },
-    [renderCatchOption]
+    [renderCatchOption],
   );
 
   return {

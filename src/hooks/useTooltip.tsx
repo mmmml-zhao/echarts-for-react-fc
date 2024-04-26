@@ -1,8 +1,9 @@
-import { FC, ReactNode, useCallback, useMemo, useState } from "react";
-import { createPortal } from "react-dom";
-import { CreateTooltipFnParams, TooltipProps, UseTooltipProps } from "../types";
+import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { CreateTooltipFnParams, TooltipProps, UseTooltipProps } from '../types';
 
-export const TooltipRenderComponent: FC<TooltipProps> = ({
+// eslint-disable-next-line react-refresh/only-export-components
+const TooltipRenderComponent: FC<TooltipProps> = ({
   tooltipDom,
   component,
 }) => <>{tooltipDom && createPortal(component, tooltipDom)}</>;
@@ -11,20 +12,20 @@ const useTooltip = (props: UseTooltipProps) => {
   const { component } = props;
 
   const [tooltipDom] = useState<HTMLDivElement>(() =>
-    document.createElement("div")
+    document.createElement('div'),
   );
 
   const [tooltipComponent, setTooltipComponent] = useState<ReactNode>();
 
   const createTooltip = useCallback(
     (rest: CreateTooltipFnParams) => {
-      if (typeof component === "function") {
+      if (typeof component === 'function') {
         setTooltipComponent(component(rest));
       } else {
         setTooltipComponent(component);
       }
     },
-    [component]
+    [component],
   );
 
   const tooltipRender = useMemo(
@@ -34,7 +35,7 @@ const useTooltip = (props: UseTooltipProps) => {
         component={tooltipComponent}
       ></TooltipRenderComponent>
     ),
-    [tooltipComponent, tooltipDom]
+    [tooltipComponent, tooltipDom],
   );
 
   return {
