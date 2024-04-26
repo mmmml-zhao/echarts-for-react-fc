@@ -5,9 +5,8 @@ import { GridComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 
-import EChartsReact, {
-  useChart,
-} from '../src';
+// In your own project, bring it in from within 'echarts-for-react-fc' instead of '.../src'.
+import EChartsReact, { useChart } from '../src';
 
 echarts.use([GridComponent, LineChart, CanvasRenderer]);
 
