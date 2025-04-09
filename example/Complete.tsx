@@ -6,7 +6,7 @@ import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer, SVGRenderer } from 'echarts/renderers';
 
 // In your own project, bring it in from within 'echarts-for-react-fc' instead of '.../src'.
-import EChartsReact, { useChart, useTooltip ,CreateTooltipFn } from '../src';
+import EChartsReact, { useChart, useTooltip, CreateTooltipFn } from '../src';
 
 echarts.use([
   GridComponent,
@@ -49,9 +49,7 @@ const Complete: FC = () => {
     setChartOption({
       tooltip: {
         formatter: (params) => {
-          setTimeout(() => {
-            createTooltip({ params });
-          }, 100);
+          createTooltip({ params });
           return tooltipDom;
         },
       },
@@ -64,11 +62,24 @@ const Complete: FC = () => {
       },
       series: [
         {
+          id: 1,
           data: [150, 230, 224, 218, 135, 147, 260],
           type: 'line',
         },
       ],
     });
+
+    setTimeout(() => {
+      setChartOption({
+        series: [
+          {
+            id: 2,
+            data: [400, 130, 224, 118, 35, 47, 260],
+            type: 'line',
+          },
+        ],
+      });
+    }, 2000);
   }, []);
 
   const handleClickToggleRenderer = useCallback(() => {

@@ -1,5 +1,6 @@
-import { FC, ReactNode, useCallback, useMemo, useState } from 'react';
+import { FC, ReactNode, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { debounce } from 'lodash-es';
 import { CreateTooltipFnParams, TooltipProps, UseTooltipProps } from '../types';
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -9,7 +10,7 @@ const TooltipRenderComponent: FC<TooltipProps> = ({
 }) => <>{tooltipDom && createPortal(component, tooltipDom)}</>;
 
 const useTooltip = (props: UseTooltipProps) => {
-  const { component } = props;
+  const { component, debounceTime = 100 } = props;
 
   const [tooltipDom] = useState<HTMLDivElement>(() =>
     document.createElement('div'),
@@ -17,7 +18,7 @@ const useTooltip = (props: UseTooltipProps) => {
 
   const [tooltipComponent, setTooltipComponent] = useState<ReactNode>();
 
-  const createTooltip = useCallback(
+  const createTooltip = useMemo(() => debounce(
     (rest: CreateTooltipFnParams) => {
       if (typeof component === 'function') {
         setTooltipComponent(component(rest));
@@ -25,8 +26,12 @@ const useTooltip = (props: UseTooltipProps) => {
         setTooltipComponent(component);
       }
     },
-    [component],
-  );
+    debounceTime,
+    {
+      leading: debounceTime !== 0,
+      trailing: true,
+    },
+  ), [component, debounceTime]);
 
   const tooltipRender = useMemo(
     () => (

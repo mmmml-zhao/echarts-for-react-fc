@@ -1,7 +1,8 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import typescript from "@rollup/plugin-typescript";
-import { resolve } from "path";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import dts from 'vite-plugin-dts'
+
+import { resolve } from 'path';
 
 const resolvePath = (str: string) => resolve(__dirname, str);
 
@@ -9,33 +10,35 @@ const resolvePath = (str: string) => resolve(__dirname, str);
 export default defineConfig({
   plugins: [react()],
   build: {
+    outDir: 'dist',
     lib: {
-      entry: resolvePath("src/index.ts"),
-      name: "echarts-for-react-fc",
-      formats: ["es"],
-      fileName: "index",
+      entry: resolvePath('src/index.ts'),
+      name: 'echarts-for-react-fc',
+      formats: ['es'],
+      fileName(_format, entryName) {
+        return `${entryName}.js`;
+      },
     },
     rollupOptions: {
-      external: ["react", "react-dom", "echarts", "lodash"],
+      external: ['react', 'react-dom', 'echarts', 'lodash-es', 'react/jsx-runtime'],
       output: {
+        preserveModules: true,
+        preserveModulesRoot: 'src',
         globals: {
-          echarts: "echarts",
-          lodash: "lodash",
-          react: "react",
-          "react-dom": "react-dom",
+          echarts: 'echarts',
+          react: 'react',
+          'react-dom': 'react-dom',
         },
       },
       plugins: [
-        typescript({
-          target: "ES2022", // 这里指定编译到的版本，
-          rootDir: resolvePath("src"),
-          declaration: true,
-          declarationDir: resolvePath("lib"),
-          exclude: resolvePath("node_modules/**"),
-        }),
+        dts({
+          tsconfigPath: './tsconfig.json', // tsconfig.json 路径
+          insertTypesEntry: true,     // 生成类型入口文件
+          include: ['src/**/*.ts', 'src/**/*.d.ts', 'src/**/*.tsx'],   // 包含的文件
+          exclude: ['node_modules'], // 排除的文件
+          outDir: 'dist',    // 声明文件输出目录（与 tsconfig.json 一致）
+        })
       ],
     },
-    outDir: "lib", // 打包后存放的目录文件
-    sourcemap: true,
   },
 });
