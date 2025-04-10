@@ -10,7 +10,7 @@
   "files": [
     "dist",
     "README.md",
-    "README-zh.md"
+    "README-zh_CN.md"
   ],
   "author": "mmmml-zhao",
   "homepage": "https://github.com/mmmml-zhao/echarts-for-react-fc",
