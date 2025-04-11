@@ -8,6 +8,9 @@ on:
   create:
     tags: 
       - "v*"
+  push:
+    tags:
+      - "v*.*.*"  # 语义化版本格式，如 v1.2.3
 
 jobs:
   build:
