@@ -64,5 +64,8 @@ export type CreateTooltipFn = (option: CreateTooltipFnParams) => ReactNode;
 
 export interface UseTooltipProps {
   component: ReactNode | CreateTooltipFn;
-  debounceTime?: number;
+  /** 是否开启节流，防止tooltip渲染次数过多  */
+  needThrottle?: boolean
+  /** 节流时间间隔 */
+  throttleTime?: number;
 }
